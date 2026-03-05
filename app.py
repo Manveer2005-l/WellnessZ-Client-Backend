@@ -7,20 +7,26 @@ app = Flask(__name__)
 # -------------------------------
 CLIENTS = {
     "TEST_001": {
-        "bmi": 28.2,
-        "hm_visceral_fat": 13,
-        "hm_muscle": 30,
-        "hm_rm": 44,
-        "age": 27,
-        "sex": 1
-    },
-    "660ee13cda3531415fa05bae": {
-        "bmi": 31.5,
-        "hm_visceral_fat": 16,
-        "hm_muscle": 28,
-        "hm_rm": 41,
-        "age": 35,
-        "sex": 1
+        "visits": [
+            {
+                "date": "2024-01-01",
+                "bmi": 30,
+                "hm_visceral_fat": 15,
+                "hm_muscle": 28,
+                "hm_rm": 46,
+                "age": 27,
+                "sex": 1
+            },
+            {
+                "date": "2024-03-01",
+                "bmi": 28.2,
+                "hm_visceral_fat": 13,
+                "hm_muscle": 30,
+                "hm_rm": 44,
+                "age": 27,
+                "sex": 1
+            }
+        ]
     }
 }
 
@@ -36,6 +42,7 @@ def health():
 # -------------------------------
 @app.route("/clients/<client_id>", methods=["GET"])
 def get_client(client_id):
+
     client = CLIENTS.get(client_id)
 
     if not client:
