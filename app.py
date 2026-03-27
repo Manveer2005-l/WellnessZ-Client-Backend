@@ -1,15 +1,17 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import pandas as pd
 
 app = Flask(__name__)
+CORS(app)
 
 # -------------------------------
-# Load dataset ONCE
+# Load CSV
 # -------------------------------
+df = pd.read_csv("your_dataset.csv")
 
-df = pd.read_csv("manveer.csv")  # <-- put your CSV file name
-
-# Ensure date format
+# Normalize
+df["client_id"] = df["client_id"].astype(str)
 df["date"] = pd.to_datetime(df["date"])
 
 # -------------------------------
@@ -20,15 +22,15 @@ def health():
     return jsonify({"status": "ok"})
 
 # -------------------------------
-# Get all client IDs
+# GET ALL CLIENT IDS
 # -------------------------------
 @app.route("/clients", methods=["GET"])
 def get_all_clients():
-    client_ids = df["client_id"].unique().tolist()
+    client_ids = sorted(df["client_id"].unique().tolist())
     return jsonify(client_ids)
 
 # -------------------------------
-# Get client by ID
+# GET CLIENT DATA
 # -------------------------------
 @app.route("/clients/<client_id>", methods=["GET"])
 def get_client(client_id):
@@ -43,24 +45,7 @@ def get_client(client_id):
     return jsonify({"visits": visits})
 
 # -------------------------------
-# Optional: add/update client
-# -------------------------------
-@app.route("/clients/<client_id>", methods=["POST"])
-def upsert_client(client_id):
-
-    payload = request.get_json(force=True)
-
-    global df
-
-    new_rows = pd.DataFrame(payload.get("visits", []))
-    new_rows["client_id"] = client_id
-
-    df = pd.concat([df, new_rows], ignore_index=True)
-
-    return jsonify({"status": "saved", "client_id": client_id})
-
-# -------------------------------
-# Run
+# RUN
 # -------------------------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
