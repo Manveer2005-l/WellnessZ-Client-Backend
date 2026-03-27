@@ -14,10 +14,18 @@ import pandas as pd
 with open("manveer.json") as f:
     data = json.load(f)
 
-# Directly convert list → DataFrame
-df = pd.DataFrame(data)
+rows = []
 
-# Convert date
+for client in data:
+    client_id = client.get("client_id")
+
+    for visit in client.get("visits", []):
+        visit["client_id"] = client_id
+        rows.append(visit)
+
+df = pd.DataFrame(rows)
+
+# Now date exists
 df["date"] = pd.to_datetime(df["date"])
 
 print("DATA LOADED:", df.shape)
