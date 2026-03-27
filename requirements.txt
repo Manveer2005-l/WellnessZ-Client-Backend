@@ -1,3 +1,11 @@
 flask
+pandas
+numpy
+joblib
+scikit-learn
+openai
+python-dotenv
 gunicorn
-flask_cors
+requests
+pydantic
+flask-cors
