@@ -14,19 +14,15 @@ import pandas as pd
 with open("manveer.json") as f:
     data = json.load(f)
 
-rows = []
+# Directly convert list → DataFrame
+df = pd.DataFrame(data)
 
-for client_id, client_data in data.items():
-    for visit in client_data["visits"]:
-        visit["client_id"] = client_id
-        rows.append(visit)
-
-df = pd.DataFrame(rows)
-
+# Convert date
 df["date"] = pd.to_datetime(df["date"])
 
 print("DATA LOADED:", df.shape)
 print(df.head())
+
 
 # Normalize
 df["client_id"] = df["client_id"].astype(str)
